@@ -2,27 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3fe256f8-0973-43bd-a695-d1ac50587762" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../JVM参数关系.xmind" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../jvm垃圾回收.xmind" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.classpath" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.project" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/Hello.xlass" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/com/geekbang/jvm/Hello.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bin/com/geekbang/jvm/LoadClassTest.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/resource/Hello.xlass" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/geekbang/jvm/ByteCodeTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/geekbang/jvm/Hello.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/geekbang/jvm/LoadClassTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/com/geekbang/jvm/XSSDemo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/week_01.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../../ignore.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../README.md" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -126,7 +105,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1610616526707" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1610618619278" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -175,12 +154,12 @@
       <updated>1610596221124</updated>
       <workItem from="1610596222463" duration="2385000" />
       <workItem from="1610604264711" duration="388000" />
-      <workItem from="1610604862350" duration="2461000" />
+      <workItem from="1610604862350" duration="2942000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5234000" />
+    <option name="totallyTimeSpent" value="5715000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1742" height="1126" extended-state="6" />
