@@ -1,19 +1,19 @@
-package netty.gateway;
+package netty.outbound;
+
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
-import io.netty.util.ReferenceCountUtil;
-import netty.filter.HeaderHttpRequestFilter;
 import netty.filter.HeaderHttpResponseFilter;
 import netty.filter.HttpRequestFilter;
 import netty.filter.HttpResponseFilter;
-import netty.outbound.NamedThreadFactory;
+import netty.gateway.HttpHandler;
+import netty.router.HttpEndpointRouter;
+import netty.router.RandomHttpEndpointRouter;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.concurrent.FutureCallback;
@@ -25,34 +25,27 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 import static io.netty.handler.codec.http.HttpResponseStatus.NO_CONTENT;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
-public class HttpHandler extends ChannelInboundHandlerAdapter {
+public class HttpOutboundHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpHandler.class);
-
-    private HttpRequestFilter filter = new HeaderHttpRequestFilter();
-
-    private HttpResponseFilter responseFilter = new HeaderHttpResponseFilter();
-
+    private static final Logger logger = LoggerFactory.getLogger(HttpOutboundHandler.class);
     private CloseableHttpAsyncClient httpclient;
-
     private ExecutorService proxyService;
+    private List<String> backendUrls;
 
+    HttpResponseFilter filter = new HeaderHttpResponseFilter();
+    HttpEndpointRouter router = new RandomHttpEndpointRouter();
 
-    @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
+    public HttpOutboundHandler(List<String> backends) {
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-
-        FullHttpRequest fullRequest = (FullHttpRequest) msg;
+        this.backendUrls = backends.stream().map(this::formatUrl).collect(Collectors.toList());
 
         int cores = Runtime.getRuntime().availableProcessors();
         long keepAliveTime = 1000;
@@ -72,25 +65,24 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
         httpclient = HttpAsyncClients.custom().setMaxConnTotal(40)
                 .setMaxConnPerRoute(8)
                 .setDefaultIOReactorConfig(ioConfig)
-                .setKeepAliveStrategy((response, context) -> 6000)
+                .setKeepAliveStrategy((response,context) -> 6000)
                 .build();
         httpclient.start();
+    }
 
-        try {
+    private String formatUrl(String backend) {
+        return backend.endsWith("/")?backend.substring(0,backend.length()-1):backend;
+    }
 
-            String uri = fullRequest.uri();
-            if (uri.contains("/test")) {
-                filter.filter(fullRequest, ctx);
-                String url = "http://127.0.0.1:8803/";
-                proxyService.submit(()->fetchGet(fullRequest, ctx, url));
-            }
-        } catch (Exception e) {
-            logger.info("-------------------------",e);
-            ReferenceCountUtil.release(msg);
-        }
+    public void handle(final FullHttpRequest fullRequest, final ChannelHandlerContext ctx, HttpRequestFilter filter) {
+        String backendUrl = router.route(this.backendUrls);
+        final String url = backendUrl + fullRequest.uri();
+        filter.filter(fullRequest, ctx);
+        proxyService.submit(()->fetchGet(fullRequest, ctx, url));
     }
 
     private void fetchGet(FullHttpRequest fullRequest, ChannelHandlerContext ctx, String url) {
+        logger.info("----------->request url:{}",url);
         final HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader(HTTP.CONN_DIRECTIVE,HTTP.CONN_KEEP_ALIVE);
         httpGet.setHeader("HYG",fullRequest.headers().get("HYG"));
@@ -131,7 +123,7 @@ public class HttpHandler extends ChannelInboundHandlerAdapter {
             response.headers().set("Content-Type", "application/json");
             response.headers().setInt("Content-Length", Integer.parseInt(httpResponse.getFirstHeader("Content-Length").getValue()));
 
-            responseFilter.filter(response);
+            filter.filter(response);
 
         } catch (Exception e) {
             e.printStackTrace();

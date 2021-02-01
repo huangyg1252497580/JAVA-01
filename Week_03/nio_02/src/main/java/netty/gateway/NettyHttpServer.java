@@ -31,6 +31,7 @@ public class NettyHttpServer {
             serverBootstrap.group(bossGroup,workerGroup).channel(NioServerSocketChannel.class)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new HttpInitializer());
+
             Channel channel = serverBootstrap.bind(port).sync().channel();
             System.out.println("开启netty http服务器，监听地址和端口为 http://127.0.0.1:" + port + '/');
             channel.closeFuture().sync();

@@ -28,10 +28,12 @@ public class HttpServer03 {
         try {
             Thread.sleep(20);
             PrintWriter printWriter = new PrintWriter(socket.getOutputStream(), true);
-            printWriter.println("HTTP/1.1 200 OK");
+            printWriter.println("HTTP/1.1 200 OK");//;kk=java-1-nio
             printWriter.println("Content-Type:text/html;charset=utf-8");
+            String body = "hello,nio3";
+            printWriter.println("Content-Length:" + body.getBytes().length);
             printWriter.println();
-            printWriter.println("hello,nio");
+            printWriter.println(body);
             printWriter.close();
             System.out.println("访问进来了。。。。。。。。。。。。。。。。。");
         }catch (Exception e){
